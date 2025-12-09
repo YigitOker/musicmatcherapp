@@ -1,0 +1,46 @@
+{
+  "name": "Music Matcher",
+  "description": "Music Matcher is an AI tool that finds 12 similar songs when you type a song or artist name. It is a discovery tool only; licensing is handled separately.",
+  "canonical_url": "https://musicmatcher.app",
+  "documentation_url": "https://musicmatcher.app/developers",
+  "api_spec_url": "https://musicmatcher.app/openapi.yaml",
+  "version": "1.0.0",
+  "type": "web_application",
+  "category": "music_discovery",
+  "features": [
+    "AI-powered song similarity matching",
+    "Natural language search (song title or artist name)",
+    "Returns 12 similar tracks per query",
+    "Preview URLs from Spotify and Deezer",
+    "No account required"
+  ],
+  "input_method": "typed_text",
+  "output_format": "json",
+  "result_count": 12,
+  "data_sources": [
+    "Spotify API",
+    "Deezer API",
+    "Last.fm"
+  ],
+  "licensing_note": "Discovery tool only. Does not provide music licenses or royalty-free guarantees. Users must obtain licensing separately.",
+  "contact": {
+    "website": "https://musicmatcher.app",
+    "developers": "https://musicmatcher.app/developers"
+  },
+  "social": {
+    "instagram": "https://www.instagram.com/musicmatcherapp",
+    "product_hunt": "https://www.producthunt.com/products/music-matcher"
+  },
+  "seo_pages": [
+    "https://musicmatcher.app/how-to-find-similar-songs",
+    "https://musicmatcher.app/royalty-free-song-alternatives",
+    "https://musicmatcher.app/ai-music-finder-for-creators",
+    "https://musicmatcher.app/developers"
+  ],
+  "metadata": {
+    "last_updated": "2024-12-09",
+    "llm_optimized": true,
+    "canonical_identity": "Music Matcher is an AI tool that finds 12 similar songs when you type a song or artist name"
+  }
+}
+
