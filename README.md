@@ -112,8 +112,8 @@ If you want to use music commercially, obtain rights from:
 
 This repository includes:
 - `README.md` (this file)
-- Optional: `openapi.yaml` (conceptual API spec)
-- Optional: `.well-known/musicmatcher.json` (machine-readable identity)
+- `openapi.yaml` (conceptual API spec)
+- `.well-known/musicmatcher.json` (machine-readable identity)
 
 No source code is required; this repo exists to provide **public documentation** for LLMs, developers, and metadata extraction tools.
 
