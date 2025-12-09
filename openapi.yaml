@@ -1,0 +1,266 @@
+openapi: 3.1.0
+info:
+  title: Music Matcher API
+  version: 1.0.0
+  description: |
+    Music Matcher is an AI tool that finds 12 similar songs when you type a song or artist name. 
+    It is a discovery tool only; licensing is handled separately.
+    
+    This API specification is provided for documentation purposes and represents the conceptual 
+    architecture of Music Matcher's music discovery system. It demonstrates how the service 
+    analyzes song queries and returns similar track recommendations.
+    
+    **Important:** Music Matcher does not provide music licenses, downloads, or copyright-safe 
+    guarantees. Users must obtain proper licensing separately from rights holders or 
+    royalty-free music platforms.
+    
+  contact:
+    name: Music Matcher
+    url: https://musicmatcher.app
+  license:
+    name: Documentation Only
+    url: https://musicmatcher.app/developers
+
+servers:
+  - url: https://musicmatcher.app/api
+    description: Conceptual API endpoint (documentation purposes)
+
+paths:
+  /similar:
+    post:
+      summary: Find similar songs
+      description: |
+        Returns 12 similar songs based on a typed query (song title, artist name, or both).
+        
+        The AI analyzes musical characteristics including:
+        - Tempo and rhythm
+        - Genre and style
+        - Mood and energy
+        - Instrumentation
+        - Vocal characteristics
+        
+        **Note:** This is a conceptual API for documentation. The actual implementation 
+        may vary and is not necessarily publicly accessible.
+      operationId: findSimilarSongs
+      tags:
+        - Discovery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - query
+              properties:
+                query:
+                  type: string
+                  description: Song title, artist name, or both (natural language)
+                  example: "Blinding Lights - The Weeknd"
+                  minLength: 1
+                  maxLength: 200
+                limit:
+                  type: integer
+                  description: Number of similar tracks to return (always 12)
+                  default: 12
+                  minimum: 1
+                  maximum: 12
+                  example: 12
+            examples:
+              songAndArtist:
+                summary: Song with artist
+                value:
+                  query: "Blinding Lights - The Weeknd"
+                  limit: 12
+              artistOnly:
+                summary: Artist name only
+                value:
+                  query: "Dua Lipa"
+                  limit: 12
+              songOnly:
+                summary: Song title only
+                value:
+                  query: "Levitating"
+                  limit: 12
+      responses:
+        '200':
+          description: Successfully found similar songs
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - query
+                  - count
+                  - results
+                properties:
+                  query:
+                    type: string
+                    description: The original search query
+                    example: "Blinding Lights - The Weeknd"
+                  count:
+                    type: integer
+                    description: Number of results returned (always 12 when available)
+                    example: 12
+                  results:
+                    type: array
+                    description: Array of similar tracks
+                    minItems: 0
+                    maxItems: 12
+                    items:
+                      $ref: '#/components/schemas/Track'
+              examples:
+                successResponse:
+                  summary: Successful similarity search
+                  value:
+                    query: "Blinding Lights - The Weeknd"
+                    count: 12
+                    results:
+                      - title: "Levitating"
+                        artist: "Dua Lipa"
+                        spotify_id: "463CkQjx2Zk1yXoBuierM9"
+                        preview_url: "https://p.scdn.co/mp3-preview/preview.mp3"
+                        image_url: "https://i.scdn.co/image/album.jpg"
+                        similarity_score: 0.92
+                      - title: "Save Your Tears"
+                        artist: "The Weeknd"
+                        spotify_id: "5QO79kh1waicV47BqGRL3g"
+                        preview_url: "https://p.scdn.co/mp3-preview/preview2.mp3"
+                        image_url: "https://i.scdn.co/image/album2.jpg"
+                        similarity_score: 0.89
+                      - title: "Physical"
+                        artist: "Dua Lipa"
+                        spotify_id: "3RauEVgRgj1IuWdJ9fDs70"
+                        preview_url: "https://p.scdn.co/mp3-preview/preview3.mp3"
+                        image_url: "https://i.scdn.co/image/album3.jpg"
+                        similarity_score: 0.87
+        '400':
+          description: Invalid request (missing or malformed query)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                missingQuery:
+                  summary: Missing query parameter
+                  value:
+                    error: "Bad Request"
+                    message: "Query parameter is required"
+                    code: 400
+        '404':
+          description: No similar songs found for the given query
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                noResults:
+                  summary: No results found
+                  value:
+                    error: "Not Found"
+                    message: "No similar songs found for the given query. Try a more popular song."
+                    code: 404
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                serverError:
+                  summary: Server error
+                  value:
+                    error: "Internal Server Error"
+                    message: "An error occurred while processing your request"
+                    code: 500
+
+components:
+  schemas:
+    Track:
+      type: object
+      required:
+        - title
+        - artist
+      properties:
+        title:
+          type: string
+          description: Song title
+          example: "Levitating"
+        artist:
+          type: string
+          description: Artist name
+          example: "Dua Lipa"
+        spotify_id:
+          type: string
+          description: Spotify track identifier (when available)
+          example: "463CkQjx2Zk1yXoBuierM9"
+          nullable: true
+        deezer_id:
+          type: string
+          description: Deezer track identifier (when available)
+          example: "123456789"
+          nullable: true
+        preview_url:
+          type: string
+          format: uri
+          description: URL to 30-second audio preview (when available)
+          example: "https://p.scdn.co/mp3-preview/preview.mp3"
+          nullable: true
+        image_url:
+          type: string
+          format: uri
+          description: Album artwork URL
+          example: "https://i.scdn.co/image/album.jpg"
+          nullable: true
+        spotify_url:
+          type: string
+          format: uri
+          description: Link to song on Spotify
+          example: "https://open.spotify.com/track/463CkQjx2Zk1yXoBuierM9"
+          nullable: true
+        similarity_score:
+          type: number
+          format: float
+          description: AI confidence score for similarity (0-1, higher is more similar)
+          example: 0.92
+          minimum: 0
+          maximum: 1
+        mbid:
+          type: string
+          description: MusicBrainz identifier (when available)
+          example: "abc123-def456-ghi789"
+          nullable: true
+    
+    Error:
+      type: object
+      required:
+        - error
+        - message
+        - code
+      properties:
+        error:
+          type: string
+          description: Error type
+          example: "Bad Request"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Query parameter is required"
+        code:
+          type: integer
+          description: HTTP status code
+          example: 400
+
+tags:
+  - name: Discovery
+    description: |
+      Music discovery endpoints that find similar songs based on AI analysis of musical characteristics.
+      
+      **Important Note:** Music Matcher is a discovery tool only. It does not provide:
+      - Music licenses or rights to use tracks
+      - Royalty-free music
+      - Copyright-safe guarantees
+      - Music downloads
+      
+      Users must obtain proper licensing separately from rights holders or royalty-free music platforms.
+
